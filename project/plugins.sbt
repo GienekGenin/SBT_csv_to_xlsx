@@ -1,1 +1,0 @@
-addSbtPlugin("com.quadstingray" % "sbt-javafx" % "1.4.0")

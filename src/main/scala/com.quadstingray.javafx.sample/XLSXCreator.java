@@ -1,18 +1,22 @@
 package com.quadstingray.javafx.sample;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 
 class XLSXCreator {
 
-    static void newWorkSheet(HashSet<String> vendorKeys, HashMap<String, ProductModel> hmap) {
+    static void newWorkSheet(File selectedFile, HashSet<String> vendorKeys, HashMap<String, ProductModel> hmap) {
         try {
-            String filename = "catalog.xls";
+            File outputFile = new File(selectedFile.getParent(),
+                    FilenameUtils.removeExtension(selectedFile.getName()) + ".xls");
+            String filename = outputFile.getPath();
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.createSheet("Catalog");
             HSSFRow rowhead = sheet.createRow((short) 0);
