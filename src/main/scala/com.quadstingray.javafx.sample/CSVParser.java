@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Scanner;
 
 class CSVParser {
-
-    HashMap<String, ProductModel> hmap = new HashMap<>();
+    private static final String token = "|key|";
+    HashMap<String, ProductModel> allProducts = new HashMap<>();
     HashSet<String> vendorKeys = new HashSet<>();
 
     void parseCSV(File selectedFile) {
@@ -19,31 +19,36 @@ class CSVParser {
 
             while (scanner.hasNext()) {
                 List<String> line = CSVLineParser.parseLine(scanner.nextLine());
-
-                String vendorID = line.get(7);
-                if (!vendorID.equals("") && !vendorID.equals(" ")) {
-                    vendorKeys.add(vendorID);
-                    int itemsCount = 0;
-                    if (Functional.isInteger(line.get(0))) {
-                        itemsCount = Integer.parseInt(line.get(0));
+                String vendo = "";
+                try {
+                    vendo = line.get(6);
+                } catch (Exception e){
+                    System.out.println(e);
+                }
+                if (!vendo.equals("") && !vendo.equals(" ")) {
+                    int count = 0;
+                    float ulamek = 0;
+                    if (Functional.isNumber(line.get(0))) {
+                        count = Integer.parseInt(line.get(0));
                     }
-                    String prodCode = line.get(1);
-                    String name = line.get(3);
-                    String SMD_THT = line.get(8);
-                    if (itemsCount >= 1) {
-                        if (hmap.get(vendorID) == null) {
-                            ProductModel products = new ProductModel();
-                            products.setILOSC(products.getILOSC() + itemsCount);
-                            products.KODTOWARU.add(prodCode);
-                            products.NAZWATOWARU = name;
-                            products.OBUDOWA = SMD_THT;
-                            hmap.put(vendorID, products);
-                        } else {
-                            ProductModel products = hmap.get(vendorID);
-                            products.setILOSC(products.getILOSC() + itemsCount);
-                            products.KODTOWARU.add(prodCode);
-                            hmap.replace(vendorID, products);
-                        }
+                    String strUlamek = line.get(7).replace(",",".");
+                    if (Functional.isNumber(strUlamek)) {
+                        ulamek = Float.parseFloat(strUlamek);
+                    }
+                    String vendorKey = vendo +token+ ulamek;
+                    vendorKeys.add(vendorKey);
+                    String refDes = line.get(1), value = line.get(2), patternName = line.get(3);
+                    String producent = line.get(4), uwagi = line.get(5);
+                    if (allProducts.get(vendorKey) == null) {
+                        ProductModel product = new ProductModel(uwagi, value, producent, patternName, vendo, ulamek);
+                        product.setCount(product.getCount() + count);
+                        product.refDes.add(refDes);
+                        allProducts.put(vendorKey, product);
+                    } else {
+                        ProductModel product = allProducts.get(vendorKey);
+                        product.setCount(product.getCount() + count);
+                        product.refDes.add(refDes);
+                        allProducts.put(vendorKey, product);
                     }
                 }
             }
