@@ -20,7 +20,7 @@ class MainController {
             allProducts.put(key, product);
         }
         XLSXCreator.fullWorkSheet(selectedFile, csvParser.vendorKeys, csvParser.allProducts);
-//        XLSXCreator.thtWorkSheet(selectedFile, csvParser.vendorKeys, csvParser.allProducts);
-//        XLSXCreator.smdWorkSheet(selectedFile, csvParser.vendorKeys, csvParser.allProducts);
+        XLSXCreator.thtWorkSheet(selectedFile, csvParser.vendorKeys, csvParser.allProducts);
+        XLSXCreator.smdWorkSheet(selectedFile, csvParser.vendorKeys, csvParser.allProducts);
     }
 }

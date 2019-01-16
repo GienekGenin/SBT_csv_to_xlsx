@@ -47,7 +47,9 @@ class CSVParser {
                     } else {
                         ProductModel product = allProducts.get(vendorKey);
                         product.setCount(product.getCount() + count);
-                        product.refDes.add(refDes);
+                        if(product.refDes.size() % 8 == 0){
+                            product.refDes.add("\n"+refDes);
+                        } else product.refDes.add(refDes);
                         allProducts.put(vendorKey, product);
                     }
                 }
