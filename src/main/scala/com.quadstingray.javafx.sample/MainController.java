@@ -14,7 +14,7 @@ class MainController {
         csvParser.parseCSV(selectedFile);
         allProducts = csvParser.allProducts;
         vendorKeys = csvParser.vendorKeys;
-        for(String key : vendorKeys){
+        for (String key : vendorKeys) {
             ProductModel product = allProducts.get(key);
             product.goldpins = product.count / product.ulamek;
             allProducts.put(key, product);

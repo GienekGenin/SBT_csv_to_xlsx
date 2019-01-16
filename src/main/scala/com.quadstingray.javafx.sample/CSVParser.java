@@ -22,7 +22,7 @@ class CSVParser {
                 String vendo = "";
                 try {
                     vendo = line.get(6);
-                } catch (Exception e){
+                } catch (Exception e) {
                     System.out.println(e);
                 }
                 if (!vendo.equals("") && !vendo.equals(" ")) {
@@ -31,11 +31,11 @@ class CSVParser {
                     if (Functional.isNumber(line.get(0))) {
                         count = Integer.parseInt(line.get(0));
                     }
-                    String strUlamek = line.get(7).replace(",",".");
+                    String strUlamek = line.get(7).replace(",", ".");
                     if (Functional.isNumber(strUlamek)) {
                         ulamek = Float.parseFloat(strUlamek);
                     }
-                    String vendorKey = vendo +token+ ulamek;
+                    String vendorKey = vendo + token + ulamek;
                     vendorKeys.add(vendorKey);
                     String refDes = line.get(1), value = line.get(2), patternName = line.get(3);
                     String producent = line.get(4), uwagi = line.get(5);
@@ -47,8 +47,8 @@ class CSVParser {
                     } else {
                         ProductModel product = allProducts.get(vendorKey);
                         product.setCount(product.getCount() + count);
-                        if(product.refDes.size() % 8 == 0){
-                            product.refDes.add("\n"+refDes);
+                        if (product.refDes.size() % 8 == 0) {
+                            product.refDes.add("\n" + refDes);
                         } else product.refDes.add(refDes);
                         allProducts.put(vendorKey, product);
                     }

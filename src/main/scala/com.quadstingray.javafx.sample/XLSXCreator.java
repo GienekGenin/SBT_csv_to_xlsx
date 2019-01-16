@@ -3,7 +3,6 @@ package com.quadstingray.javafx.sample;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.sl.usermodel.ColorStyle;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
@@ -67,7 +66,6 @@ class XLSXCreator {
         return styles;
     }
 
-
     private static File getOutputFile(File selectedFile, String ending) {
         return new File(selectedFile.getParent(),
                 FilenameUtils.removeExtension(selectedFile.getName()) + ending + ".xls");
@@ -130,8 +128,8 @@ class XLSXCreator {
                 row.createCell(5).setCellValue(towarInfo.producent);
                 row.createCell(6).setCellValue(towarInfo.uwagi);
                 row.createCell(7).setCellValue(towarInfo.vendo);
-                if(towarInfo.ulamek != 0){
-                    row.createCell(8).setCellValue(String.format("%.5f",towarInfo.ulamek));
+                if (towarInfo.ulamek != 0) {
+                    row.createCell(8).setCellValue(String.format("%.5f", towarInfo.ulamek));
                 } else row.createCell(8).setCellValue(towarInfo.ulamek);
                 for (int i = 0; i <= 8; i++) {
                     row.getCell(i).setCellStyle(styles.get("regularCell"));
@@ -167,7 +165,7 @@ class XLSXCreator {
                 row.createCell(2).setCellValue("");
                 row.createCell(3).setCellValue("");
                 if (towarInfo.ulamek != 0) {
-                    row.createCell(4).setCellValue(Float.parseFloat(String.format("%.5f",towarInfo.count * towarInfo.ulamek)));
+                    row.createCell(4).setCellValue(Float.parseFloat(String.format("%.5f", towarInfo.count * towarInfo.ulamek)));
                 } else row.createCell(4).setCellValue(towarInfo.count);
                 row.createCell(5).setCellValue(1);
                 row.createCell(6).setCellValue("Z brakami");
