@@ -3,18 +3,12 @@ package com.quadstingray.javafx.sample;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Scanner;
 
 class MainController {
 
-    static void launch() {
-        System.out.println("Set file path: ");
-        Scanner scan = new Scanner(System.in);
-        String path = scan.nextLine();
+    static void launch(String path) {
         File selectedFile = new File(path);
         CSVParser csvParser = new CSVParser();
-// D:\Bitstream\TestFilesBom\CHIRON_nowy_modul - Copy.bom
-        // D:\Bitstream\TestFilesBom\GFOX_nowy_modul - Copy.bom
         HashMap<String, ProductModel> allProducts;
         HashSet<String> vendorKeys;
         csvParser.parseCSV(selectedFile);
