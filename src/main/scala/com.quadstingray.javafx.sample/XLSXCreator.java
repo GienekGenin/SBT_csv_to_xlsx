@@ -1,19 +1,65 @@
 package com.quadstingray.javafx.sample;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.sl.usermodel.ColorStyle;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 class XLSXCreator {
 
-    private static File getOutputFile(File selectedFile, String ending){
+    private static Map<String, HSSFCellStyle> styles;
+
+    private static HSSFCellStyle createBorderedStyle(HSSFWorkbook wb) {
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setBorderRight(BorderStyle.DASH_DOT);
+        style.setRightBorderColor(IndexedColors.RED.getIndex());
+        style.setBorderBottom(BorderStyle.DASH_DOT);
+        style.setBottomBorderColor(IndexedColors.BLUE.getIndex());
+        style.setBorderLeft(BorderStyle.DASH_DOT);
+        style.setLeftBorderColor(IndexedColors.GREEN.getIndex());
+        style.setBorderTop(BorderStyle.DASH_DOT);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        return style;
+    }
+
+    private static Map<String, HSSFCellStyle> createStyles(HSSFWorkbook wb){
+        Map<String, HSSFCellStyle> styles = new HashMap<String, HSSFCellStyle>();
+//        DataFormat df = wb.createDataFormat();
+
+        HSSFCellStyle style;
+        HSSFFont headerFont = wb.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        style = createBorderedStyle(wb);
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setFont(headerFont);
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFillForegroundColor(IndexedColors.RED.getIndex());
+        style.setFillBackgroundColor((short) 50);
+        styles.put("style1", style);
+
+//        style = createBorderedStyle(wb);
+//        style.setAlignment(CellStyle.ALIGN_CENTER);
+//        style.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+//        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+//        style.setFont(headerFont);
+//        style.setDataFormat(df.getFormat("d-mmm"));
+//        styles.put("date_style", style);
+        return styles;
+    }
+
+
+    private static File getOutputFile(File selectedFile, String ending) {
         return new File(selectedFile.getParent(),
                 FilenameUtils.removeExtension(selectedFile.getName()) + ending + ".xls");
     }
@@ -23,10 +69,10 @@ class XLSXCreator {
         workbook.write(fileOut);
         fileOut.close();
         workbook.close();
-        System.out.println(outputFile.getPath() +" file has been generated!");
+        System.out.println(outputFile.getPath() + " file has been generated!");
     }
 
-    private static void initWorkSheet(HSSFSheet sheet){
+    private static void initWorkSheet(HSSFSheet sheet) {
         HSSFRow rowhead = sheet.createRow((short) 0);
         rowhead.createCell(0).setCellValue("KOD");
         rowhead.createCell(1).setCellValue("KODTOWARU");
@@ -44,7 +90,12 @@ class XLSXCreator {
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.createSheet("Catalog");
             HSSFRow rowhead = sheet.createRow((short) 0);
-            rowhead.createCell(0).setCellValue("Ilosc");
+
+            styles = createStyles(workbook);
+            HSSFCell ff = rowhead.createCell(0);
+            ff.setCellStyle(styles.get("style1"));
+            ff.setCellValue("Ilosc");
+//            rowhead.createCell(0).setCellValue("Ilosc");
             rowhead.createCell(1).setCellValue("RefDes");
             rowhead.createCell(2).setCellValue("Wartosc");
             rowhead.createCell(3).setCellValue("PatternName");
@@ -52,7 +103,7 @@ class XLSXCreator {
             rowhead.createCell(5).setCellValue("Producent");
             rowhead.createCell(6).setCellValue("Uwagi");
             rowhead.createCell(7).setCellValue("Vendo");
-            rowhead.createCell(7).setCellValue("Czesc ulamkowa(goldpiny)");
+            rowhead.createCell(8).setCellValue("Czesc ulamkowa(goldpiny)");
 
             int cnt = 0;
             for (String key : vendorKeys) {
@@ -62,6 +113,9 @@ class XLSXCreator {
 
                 HSSFRow row = sheet.createRow((short) cnt);
 
+//                HSSFCell test = row.createCell(0);
+//                test.setCellStyle(styles.get("style1"));
+//                test.setCellValue(towarInfo.count);
                 row.createCell(0).setCellValue(towarInfo.count);
                 row.createCell(1).setCellValue(refDes);
                 row.createCell(2).setCellValue(towarInfo.value);
@@ -81,7 +135,7 @@ class XLSXCreator {
     }
 
     private static void fillWorkSheet(String type, HashSet<String> vendorKeys,
-                                      HSSFSheet sheet, HashMap<String, ProductModel> hmap){
+                                      HSSFSheet sheet, HashMap<String, ProductModel> hmap) {
         int cnt = 0;
         for (String key : vendorKeys) {
             ProductModel towarInfo = hmap.get(key);
@@ -137,4 +191,3 @@ class XLSXCreator {
         }
     }
 }
-
