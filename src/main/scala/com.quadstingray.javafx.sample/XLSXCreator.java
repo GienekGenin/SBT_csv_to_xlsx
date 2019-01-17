@@ -62,7 +62,6 @@ class XLSXCreator {
         headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         headerCellStyle.setFillForegroundColor(headerBackgroundColor.getIndex());
         styles.put("header", headerCellStyle);
-
         return styles;
     }
 
@@ -128,9 +127,11 @@ class XLSXCreator {
                 row.createCell(5).setCellValue(towarInfo.producent);
                 row.createCell(6).setCellValue(towarInfo.uwagi);
                 row.createCell(7).setCellValue(towarInfo.vendo);
+                row.createCell(8).setCellType(CellType.NUMERIC);
                 if (towarInfo.ulamek != 0) {
-                    row.createCell(8).setCellValue(String.format("%.5f", towarInfo.ulamek));
-                } else row.createCell(8).setCellValue(towarInfo.ulamek);
+                    row.getCell(8).setCellValue(towarInfo.ulamek);
+                } else row.createCell(8).setCellValue("");
+
                 for (int i = 0; i <= 8; i++) {
                     row.getCell(i).setCellStyle(styles.get("regularCell"));
                 }
@@ -164,9 +165,10 @@ class XLSXCreator {
                 row.createCell(1).setCellValue("");
                 row.createCell(2).setCellValue("");
                 row.createCell(3).setCellValue("");
+                row.createCell(4).setCellType(CellType.NUMERIC);
                 if (towarInfo.ulamek != 0) {
-                    row.createCell(4).setCellValue(Float.parseFloat(String.format("%.5f", towarInfo.count * towarInfo.ulamek)));
-                } else row.createCell(4).setCellValue(towarInfo.count);
+                    row.getCell(4).setCellValue((double)Math.round(towarInfo.count * towarInfo.ulamek*1000d)/1000d);
+                } else row.getCell(4).setCellValue((double) Math.round(towarInfo.count * 1000d)/1000d);
                 row.createCell(5).setCellValue(1);
                 row.createCell(6).setCellValue("Z brakami");
                 row.createCell(7).setCellValue("");
@@ -184,7 +186,6 @@ class XLSXCreator {
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.createSheet("Catalog");
             initWorkSheet(sheet);
-
             fillWorkSheet("THT", vendorKeys, sheet, hmap);
 
             XLSXCreator.createXlsxFile(outputFile, workbook);
@@ -200,7 +201,6 @@ class XLSXCreator {
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.createSheet("Catalog");
             initWorkSheet(sheet);
-
             fillWorkSheet("SMD", vendorKeys, sheet, hmap);
 
             XLSXCreator.createXlsxFile(outputFile, workbook);
