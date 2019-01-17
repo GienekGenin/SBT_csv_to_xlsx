@@ -1,0 +1,1 @@
+"D:\ConverterApp\jdk-11.0.1\bin\java" -Dfile.encoding="UTF-8" -jar D:\ConverterApp\javafx-licences-simple-assembly-0.1.jar "D:\Bitstream\TestFilesBom\CHIRON_nowy_modul.bom"

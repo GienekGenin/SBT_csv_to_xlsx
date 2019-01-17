@@ -1,26 +1,24 @@
 package com.quadstingray.javafx.sample;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 
 class CSVParser {
     private static final String token = "|key|";
     HashMap<String, ProductModel> allProducts = new HashMap<>();
     HashSet<String> vendorKeys = new HashSet<>();
-
     void parseCSV(File selectedFile) {
-
         try {
+            Locale loc = new Locale("pl", "PL");
             Scanner scanner = new Scanner(new File(selectedFile.getAbsolutePath()));
-
+            scanner.useLocale(loc);
             while (scanner.hasNext()) {
                 List<String> line = CSVLineParser.parseLine(scanner.nextLine());
                 String vendo = "";
                 try {
                     vendo = line.get(6);
                 } catch (Exception e) {
-                    System.out.println(e);
+//                    System.out.println(e);
                 }
                 if (!vendo.equals("") && !vendo.equals(" ")) {
                     int count = 0;

@@ -1,13 +1,13 @@
 package com.quadstingray.javafx.sample;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -37,6 +37,7 @@ class XLSXCreator {
         regularFont.setBold(false);
         regularFont.setFontHeightInPoints((short) 11);
         regularFont.setFontName("Calibri");
+        regularFont.setCharSet(FontCharset.BALTIC.getNativeId());
         regularCellStyle = createBorderedStyle(wb);
 
         regularCellStyle.setAlignment(HorizontalAlignment.LEFT);
@@ -50,6 +51,7 @@ class XLSXCreator {
         headerFont.setBold(false);
         headerFont.setFontHeightInPoints((short) 10);
         headerFont.setFontName("Arial");
+        headerFont.setCharSet(FontCharset.BALTIC.getNativeId());
         headerCellStyle = createBorderedStyle(wb);
 
         headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -75,6 +77,9 @@ class XLSXCreator {
         workbook.write(fileOut);
         fileOut.close();
         workbook.close();
+        OutputStreamWriter osw = new OutputStreamWriter(fileOut, "UTF-8");
+        Writer out = new BufferedWriter(osw);
+        out.close();
         System.out.println(outputFile.getPath() + " file has been generated!");
     }
 
@@ -99,7 +104,7 @@ class XLSXCreator {
 
             styles = createStyles(workbook);
 
-            rowhead.createCell(0).setCellValue("Ilosc");
+            rowhead.createCell(0).setCellValue("Ilość");
             rowhead.createCell(1).setCellValue("RefDes");
             rowhead.createCell(2).setCellValue("Wartosc");
             rowhead.createCell(3).setCellValue("PatternName");
@@ -117,7 +122,7 @@ class XLSXCreator {
                 ProductModel towarInfo = hmap.get(key);
                 cnt += 1;
                 String refDes = String.join(",", towarInfo.refDes);
-
+// D:\Bitstream\TestFilesBom\CHIRON_nowy_modul.bom
                 HSSFRow row = sheet.createRow((short) cnt);
                 row.createCell(0).setCellValue(towarInfo.count);
                 row.createCell(1).setCellValue(refDes);
