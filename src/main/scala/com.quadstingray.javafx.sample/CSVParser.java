@@ -2,10 +2,7 @@ package com.quadstingray.javafx.sample;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 class CSVParser {
     private static final String token = "|key|";
@@ -35,22 +32,50 @@ class CSVParser {
                     if (Functional.isNumber(strUlamek)) {
                         ulamek = Float.parseFloat(strUlamek);
                     }
-                    String vendorKey = vendo + token + ulamek;
-                    vendorKeys.add(vendorKey);
+                    String vendoKey = vendo + token + ulamek;
+
                     String refDes = line.get(1), value = line.get(2), patternName = line.get(3);
                     String producent = line.get(4), uwagi = line.get(5);
-                    if (allProducts.get(vendorKey) == null) {
-                        ProductModel product = new ProductModel(uwagi, value, producent, patternName, vendo, ulamek);
-                        product.setCount(product.getCount() + count);
-                        product.refDes.add(refDes);
-                        allProducts.put(vendorKey, product);
+
+                    ArrayList<String> splitedVendo = new ArrayList<>();
+                    if (vendo.contains("&")) {
+                        String[] splitVendo = vendo.split("&");
+                        splitedVendo.add(splitVendo[0]);
+                        splitedVendo.add(splitVendo[1]);
+                    }
+                    if (!(splitedVendo.isEmpty())) {
+                        for(String key : splitedVendo){
+                            vendorKeys.add(key + token + ulamek);
+                            if (allProducts.get(key + token + ulamek) == null) {
+                                ProductModel product = new ProductModel(uwagi, value, producent, patternName, key, ulamek);
+                                product.setCount(product.getCount() + count);
+                                product.refDes.add(refDes);
+                                allProducts.put(key + token + ulamek, product);
+                            } else {
+                                ProductModel product = allProducts.get(key + token + ulamek);
+                                product.setCount(product.getCount() + count);
+                                if (product.refDes.size() % 8 == 0) {
+                                    product.refDes.add("\n" + refDes);
+                                } else product.refDes.add(refDes);
+                                allProducts.put(key + token + ulamek, product);
+                            }
+                        }
+
                     } else {
-                        ProductModel product = allProducts.get(vendorKey);
-                        product.setCount(product.getCount() + count);
-                        if (product.refDes.size() % 8 == 0) {
-                            product.refDes.add("\n" + refDes);
-                        } else product.refDes.add(refDes);
-                        allProducts.put(vendorKey, product);
+                        vendorKeys.add(vendoKey);
+                        if (allProducts.get(vendoKey) == null) {
+                            ProductModel product = new ProductModel(uwagi, value, producent, patternName, vendo, ulamek);
+                            product.setCount(product.getCount() + count);
+                            product.refDes.add(refDes);
+                            allProducts.put(vendoKey, product);
+                        } else {
+                            ProductModel product = allProducts.get(vendoKey);
+                            product.setCount(product.getCount() + count);
+                            if (product.refDes.size() % 8 == 0) {
+                                product.refDes.add("\n" + refDes);
+                            } else product.refDes.add(refDes);
+                            allProducts.put(vendoKey, product);
+                        }
                     }
                 }
             }
