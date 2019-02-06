@@ -64,6 +64,19 @@ class XLSXCreator {
         headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         headerCellStyle.setFillForegroundColor(headerBackgroundColor.getIndex());
         styles.put("header", headerCellStyle);
+
+        HSSFCellStyle emptyVendoCellStyle;
+        HSSFPalette emptyPalette = wb.getCustomPalette();
+        HSSFColor emptyVendoBackgroundColor = emptyPalette.findSimilarColor(188, 0, 0);
+
+        emptyVendoCellStyle = createBorderedStyle(wb);
+        emptyVendoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        emptyVendoCellStyle.setFillForegroundColor(emptyVendoBackgroundColor.getIndex());
+        emptyVendoCellStyle.setAlignment(HorizontalAlignment.LEFT);
+        emptyVendoCellStyle.setFont(regularFont);
+        emptyVendoCellStyle.setWrapText(true);
+        emptyVendoCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        styles.put("emptyVendo", emptyVendoCellStyle);
         return styles;
     }
 
@@ -135,9 +148,14 @@ class XLSXCreator {
                 if (towarInfo.ulamek != 0) {
                     row.getCell(8).setCellValue(towarInfo.ulamek);
                 } else row.createCell(8).setCellValue("");
-
-                for (int i = 0; i <= 8; i++) {
-                    row.getCell(i).setCellStyle(styles.get("regularCell"));
+                if (towarInfo.vendo.isEmpty() || towarInfo.vendo.equals("")) {
+                    for (int i = 0; i <= 8; i++) {
+                        row.getCell(i).setCellStyle(styles.get("emptyVendo"));
+                    }
+                } else {
+                    for (int i = 0; i <= 8; i++) {
+                        row.getCell(i).setCellStyle(styles.get("regularCell"));
+                    }
                 }
             }
             sheet.autoSizeColumn(1);
@@ -171,8 +189,8 @@ class XLSXCreator {
                 row.createCell(3).setCellValue("");
                 row.createCell(4).setCellType(CellType.NUMERIC);
                 if (towarInfo.ulamek != 0) {
-                    row.getCell(4).setCellValue((double)Math.round(towarInfo.count * towarInfo.ulamek*1000d)/1000d);
-                } else row.getCell(4).setCellValue((double) Math.round(towarInfo.count * 1000d)/1000d);
+                    row.getCell(4).setCellValue((double) Math.round(towarInfo.count * towarInfo.ulamek * 1000d) / 1000d);
+                } else row.getCell(4).setCellValue((double) Math.round(towarInfo.count * 1000d) / 1000d);
                 row.createCell(5).setCellValue(1);
                 row.createCell(6).setCellValue("Z brakami");
                 row.createCell(7).setCellValue("");
