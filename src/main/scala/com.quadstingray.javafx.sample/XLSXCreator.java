@@ -122,7 +122,6 @@ class XLSXCreator {
                 ProductModel towarInfo = hmap.get(key);
                 cnt += 1;
                 String refDes = String.join(",", towarInfo.refDes);
-// D:\Bitstream\TestFilesBom\CHIRON_nowy_modul.bom
                 HSSFRow row = sheet.createRow((short) cnt);
                 row.createCell(0).setCellValue(towarInfo.count);
                 row.createCell(1).setCellValue(refDes);

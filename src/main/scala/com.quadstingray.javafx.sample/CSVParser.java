@@ -7,80 +7,55 @@ class CSVParser {
     private static final String token = "|key|";
     HashMap<String, ProductModel> allProducts = new HashMap<>();
     HashSet<String> vendorKeys = new HashSet<>();
+
     void parseCSV(File selectedFile) {
+        BufferedReader br = null;
         try {
-            Locale loc = new Locale("pl", "PL");
-            Scanner scanner = new Scanner(new File(selectedFile.getAbsolutePath()));
-            scanner.useLocale(loc);
-            while (scanner.hasNext()) {
-                List<String> line = CSVLineParser.parseLine(scanner.nextLine());
-                String vendo = "";
-                try {
-                    vendo = line.get(6);
-                } catch (Exception e) {
-//                    System.out.println(e);
+            br = new BufferedReader(new FileReader(new File(selectedFile.getAbsolutePath())));
+            String availalbe;
+            while ((availalbe = br.readLine()) != null) {
+                List<String> line = CSVLineParser.parseLine(availalbe);
+                int count = 0;
+                float ulamek = 0;
+                String strUlamek = line.get(7).replace(",", "."), refDes = line.get(1),
+                        value = line.get(2), patternName = line.get(3), producent = line.get(4),
+                        uwagi = line.get(5), vendo = line.get(6);
+                if (Functional.isNumber(line.get(0))) {
+                    count = Integer.parseInt(line.get(0));
                 }
-                if (!vendo.equals("") && !vendo.equals(" ")) {
-                    int count = 0;
-                    float ulamek = 0;
-                    if (Functional.isNumber(line.get(0))) {
-                        count = Integer.parseInt(line.get(0));
-                    }
-                    String strUlamek = line.get(7).replace(",", ".");
-                    if (Functional.isNumber(strUlamek)) {
-                        ulamek = Float.parseFloat(strUlamek);
-                    }
-                    String vendoKey = vendo + token + ulamek;
-
-                    String refDes = line.get(1), value = line.get(2), patternName = line.get(3);
-                    String producent = line.get(4), uwagi = line.get(5);
-
-                    ArrayList<String> splitedVendo = new ArrayList<>();
-                    if (vendo.contains("&")) {
-                        String[] splitVendo = vendo.split("&");
-                        splitedVendo.add(splitVendo[0]);
-                        splitedVendo.add(splitVendo[1]);
-                    }
-                    if (!(splitedVendo.isEmpty())) {
-                        for(String key : splitedVendo){
-                            vendorKeys.add(key + token + ulamek);
-                            if (allProducts.get(key + token + ulamek) == null) {
-                                ProductModel product = new ProductModel(uwagi, value, producent, patternName, key, ulamek);
-                                product.setCount(product.getCount() + count);
-                                product.refDes.add(refDes);
-                                allProducts.put(key + token + ulamek, product);
-                            } else {
-                                ProductModel product = allProducts.get(key + token + ulamek);
-                                product.setCount(product.getCount() + count);
-                                if (product.refDes.size() % 8 == 0) {
-                                    product.refDes.add("\n" + refDes);
-                                } else product.refDes.add(refDes);
-                                allProducts.put(key + token + ulamek, product);
-                            }
-                        }
-
-                    } else {
-                        vendorKeys.add(vendoKey);
-                        if (allProducts.get(vendoKey) == null) {
-                            ProductModel product = new ProductModel(uwagi, value, producent, patternName, vendo, ulamek);
-                            product.setCount(product.getCount() + count);
-                            product.refDes.add(refDes);
-                            allProducts.put(vendoKey, product);
-                        } else {
-                            ProductModel product = allProducts.get(vendoKey);
-                            product.setCount(product.getCount() + count);
-                            if (product.refDes.size() % 8 == 0) {
-                                product.refDes.add("\n" + refDes);
-                            } else product.refDes.add(refDes);
-                            allProducts.put(vendoKey, product);
-                        }
-                    }
+                if (Functional.isNumber(strUlamek)) {
+                    ulamek = Float.parseFloat(strUlamek);
+                }
+                if(vendo.equals("IGNORE")){
+                    continue;
+                }
+                String key = value + token + patternName;
+                vendorKeys.add(key);
+                if (allProducts.get(key) == null) {
+                    ProductModel product = new ProductModel(uwagi, value, producent, patternName, vendo, ulamek);
+                    product.setCount(product.getCount() + count);
+                    product.refDes.add(refDes);
+                    allProducts.put(key, product);
+                } else {
+                    ProductModel product = allProducts.get(key);
+                    product.setCount(product.getCount() + count);
+                    if (product.refDes.size() % 8 == 0) {
+                        product.refDes.add("\n" + refDes);
+                    } else product.refDes.add(refDes);
+                    allProducts.put(key, product);
                 }
             }
-            scanner.close();
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+            System.out.println("This error");
             e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
-
 }
