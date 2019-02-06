@@ -17,7 +17,8 @@ class CSVParser {
                 List<String> line = CSVLineParser.parseLine(availalbe);
                 int count = 0;
                 float ulamek = 0;
-                String strUlamek = line.get(7).replace(",", "."), refDes = line.get(1),
+                String refDes = line.get(1);
+                String strUlamek = line.get(7).replace(",", "."),
                         value = line.get(2), patternName = line.get(3), producent = line.get(4),
                         uwagi = line.get(5), vendo = line.get(6);
                 if (Functional.isNumber(line.get(0))) {
@@ -26,23 +27,47 @@ class CSVParser {
                 if (Functional.isNumber(strUlamek)) {
                     ulamek = Float.parseFloat(strUlamek);
                 }
-                if(vendo.equals("IGNORE")){
+                if (vendo.equals("IGNORE")) {
                     continue;
                 }
-                String key = value + token + patternName;
-                vendorKeys.add(key);
-                if (allProducts.get(key) == null) {
-                    ProductModel product = new ProductModel(uwagi, value, producent, patternName, vendo, ulamek);
-                    product.setCount(product.getCount() + count);
-                    product.refDes.add(refDes);
-                    allProducts.put(key, product);
+                if (vendo.contains("&")) {
+                    ArrayList<String> splitedVendo = new ArrayList<>();
+                    String[] splitVendo = vendo.split("&");
+                    splitedVendo.add(splitVendo[0]);
+                    splitedVendo.add(splitVendo[1]);
+                    for (String partVendo : splitedVendo) {
+                        String key = value + token + patternName + token + partVendo + token + ulamek;
+                        vendorKeys.add(key);
+                        if (allProducts.get(key) == null) {
+                            ProductModel product = new ProductModel(uwagi, value, producent, patternName, partVendo, ulamek);
+                            product.setCount(product.getCount() + count);
+                            product.refDes.add(refDes);
+                            allProducts.put(key, product);
+                        } else {
+                            ProductModel product = allProducts.get(key);
+                            product.setCount(product.getCount() + count);
+                            if (product.refDes.size() % 8 == 0) {
+                                product.refDes.add("\n" + refDes);
+                            } else product.refDes.add(refDes);
+                            allProducts.put(key, product);
+                        }
+                    }
                 } else {
-                    ProductModel product = allProducts.get(key);
-                    product.setCount(product.getCount() + count);
-                    if (product.refDes.size() % 8 == 0) {
-                        product.refDes.add("\n" + refDes);
-                    } else product.refDes.add(refDes);
-                    allProducts.put(key, product);
+                    String key = value + token + patternName + token + ulamek;
+                    vendorKeys.add(key);
+                    if (allProducts.get(key) == null) {
+                        ProductModel product = new ProductModel(uwagi, value, producent, patternName, vendo, ulamek);
+                        product.setCount(product.getCount() + count);
+                        product.refDes.add(refDes);
+                        allProducts.put(key, product);
+                    } else {
+                        ProductModel product = allProducts.get(key);
+                        product.setCount(product.getCount() + count);
+                        if (product.refDes.size() % 8 == 0) {
+                            product.refDes.add("\n" + refDes);
+                        } else product.refDes.add(refDes);
+                        allProducts.put(key, product);
+                    }
                 }
             }
         } catch (IOException e) {
