@@ -8,6 +8,25 @@ class CSVParser {
     HashMap<String, ProductModel> allProducts = new HashMap<>();
     HashSet<String> vendorKeys = new HashSet<>();
 
+    static void initProduct(HashSet<String> vendorKeys, String key, HashMap<String, ProductModel> allProducts,
+                            String uwagi, String value, String producent, String patternName, String vendo,
+                            float ulamek, int count, String refDes) {
+        vendorKeys.add(key);
+        if (allProducts.get(key) == null) {
+            ProductModel product = new ProductModel(uwagi, value, producent, patternName, vendo, ulamek);
+            product.setCount(product.getCount() + count);
+            product.refDes.add(refDes);
+            allProducts.put(key, product);
+        } else {
+            ProductModel product = allProducts.get(key);
+            product.setCount(product.getCount() + count);
+            if (product.refDes.size() % 8 == 0) {
+                product.refDes.add("\n" + refDes);
+            } else product.refDes.add(refDes);
+            allProducts.put(key, product);
+        }
+    }
+
     void parseCSV(File selectedFile) {
         BufferedReader br = null;
         try {
@@ -37,37 +56,13 @@ class CSVParser {
                     splitedVendo.add(splitVendo[1]);
                     for (String partVendo : splitedVendo) {
                         String key = value + token + patternName + token + partVendo + token + ulamek;
-                        vendorKeys.add(key);
-                        if (allProducts.get(key) == null) {
-                            ProductModel product = new ProductModel(uwagi, value, producent, patternName, partVendo, ulamek);
-                            product.setCount(product.getCount() + count);
-                            product.refDes.add(refDes);
-                            allProducts.put(key, product);
-                        } else {
-                            ProductModel product = allProducts.get(key);
-                            product.setCount(product.getCount() + count);
-                            if (product.refDes.size() % 8 == 0) {
-                                product.refDes.add("\n" + refDes);
-                            } else product.refDes.add(refDes);
-                            allProducts.put(key, product);
-                        }
+                        initProduct(vendorKeys, key, allProducts, uwagi, value, producent,
+                                patternName, partVendo, ulamek, count, refDes);
                     }
                 } else {
                     String key = value + token + patternName + token + ulamek;
-                    vendorKeys.add(key);
-                    if (allProducts.get(key) == null) {
-                        ProductModel product = new ProductModel(uwagi, value, producent, patternName, vendo, ulamek);
-                        product.setCount(product.getCount() + count);
-                        product.refDes.add(refDes);
-                        allProducts.put(key, product);
-                    } else {
-                        ProductModel product = allProducts.get(key);
-                        product.setCount(product.getCount() + count);
-                        if (product.refDes.size() % 8 == 0) {
-                            product.refDes.add("\n" + refDes);
-                        } else product.refDes.add(refDes);
-                        allProducts.put(key, product);
-                    }
+                    initProduct(vendorKeys, key, allProducts, uwagi, value, producent,
+                            patternName, vendo, ulamek, count, refDes);
                 }
             }
         } catch (IOException e) {
