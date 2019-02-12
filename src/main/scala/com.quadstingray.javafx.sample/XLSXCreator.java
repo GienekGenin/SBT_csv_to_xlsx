@@ -121,12 +121,11 @@ class XLSXCreator {
             rowhead.createCell(1).setCellValue("RefDes");
             rowhead.createCell(2).setCellValue("Wartosc");
             rowhead.createCell(3).setCellValue("PatternName");
-            rowhead.createCell(4).setCellValue("Symbol");
-            rowhead.createCell(5).setCellValue("Producent");
-            rowhead.createCell(6).setCellValue("Uwagi");
-            rowhead.createCell(7).setCellValue("Vendo");
-            rowhead.createCell(8).setCellValue("Czesc \nulamkowa\n(goldpiny)");
-            for (int i = 0; i <= 8; i++) {
+            rowhead.createCell(4).setCellValue("Producent");
+            rowhead.createCell(5).setCellValue("Uwagi");
+            rowhead.createCell(6).setCellValue("Vendo");
+            rowhead.createCell(7).setCellValue("Czesc \nulamkowa\n(goldpiny)");
+            for (int i = 0; i <= 7; i++) {
                 rowhead.getCell(i).setCellStyle(styles.get("header"));
             }
 
@@ -140,20 +139,19 @@ class XLSXCreator {
                 row.createCell(1).setCellValue(refDes);
                 row.createCell(2).setCellValue(towarInfo.value);
                 row.createCell(3).setCellValue(towarInfo.patternName);
-                row.createCell(4).setCellValue("");
-                row.createCell(5).setCellValue(towarInfo.producent);
-                row.createCell(6).setCellValue(towarInfo.uwagi);
-                row.createCell(7).setCellValue(towarInfo.vendo);
-                row.createCell(8).setCellType(CellType.NUMERIC);
+                row.createCell(4).setCellValue(towarInfo.producent);
+                row.createCell(5).setCellValue(towarInfo.uwagi);
+                row.createCell(6).setCellValue(towarInfo.vendo);
+                row.createCell(7).setCellType(CellType.NUMERIC);
                 if (towarInfo.ulamek != 0) {
-                    row.getCell(8).setCellValue(towarInfo.ulamek);
-                } else row.createCell(8).setCellValue("");
+                    row.getCell(7).setCellValue(towarInfo.ulamek);
+                } else row.createCell(7).setCellValue("");
                 if (towarInfo.vendo.isEmpty() || towarInfo.vendo.equals("")) {
-                    for (int i = 0; i <= 8; i++) {
+                    for (int i = 0; i <= 7; i++) {
                         row.getCell(i).setCellStyle(styles.get("emptyVendo"));
                     }
                 } else {
-                    for (int i = 0; i <= 8; i++) {
+                    for (int i = 0; i <= 7; i++) {
                         row.getCell(i).setCellStyle(styles.get("regularCell"));
                     }
                 }
