@@ -5,6 +5,7 @@ import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -112,8 +113,14 @@ class XLSXCreator {
         try {
             File outputFile = getOutputFile(selectedFile, "");
             HSSFWorkbook workbook = new HSSFWorkbook();
-            HSSFSheet sheet = workbook.createSheet("Catalog");
-            HSSFRow rowhead = sheet.createRow((short) 0);
+            HSSFSheet sheet = workbook.createSheet(selectedFile.getName());
+
+            sheet.addMergedRegion(new CellRangeAddress(0,1,0,7));
+
+            HSSFRow titleHead = sheet.createRow((short) 0);
+            titleHead.createCell(0).setCellValue(selectedFile.getName());
+
+            HSSFRow rowhead = sheet.createRow((short) 2);
 
             styles = createStyles(workbook);
 
@@ -144,7 +151,7 @@ class XLSXCreator {
                 row.createCell(6).setCellValue(towarInfo.vendo);
                 row.createCell(7).setCellType(CellType.NUMERIC);
                 if (towarInfo.ulamek != 0) {
-                    row.getCell(7).setCellValue(towarInfo.ulamek);
+                    row.getCell(7).setCellValue((double) Math.round(towarInfo.ulamek * 1000d) / 1000d);
                 } else row.createCell(7).setCellValue("");
                 if (towarInfo.vendo.isEmpty() || towarInfo.vendo.equals("")) {
                     for (int i = 0; i <= 7; i++) {
@@ -204,7 +211,7 @@ class XLSXCreator {
         try {
             File outputFile = getOutputFile(selectedFile, "_THT");
             HSSFWorkbook workbook = new HSSFWorkbook();
-            HSSFSheet sheet = workbook.createSheet("Catalog");
+            HSSFSheet sheet = workbook.createSheet(selectedFile.getName());
             initWorkSheet(sheet);
             fillWorkSheet("THT", vendorKeys, sheet, hmap);
 
@@ -219,7 +226,7 @@ class XLSXCreator {
         try {
             File outputFile = getOutputFile(selectedFile, "_SMD");
             HSSFWorkbook workbook = new HSSFWorkbook();
-            HSSFSheet sheet = workbook.createSheet("Catalog");
+            HSSFSheet sheet = workbook.createSheet(selectedFile.getName());
             initWorkSheet(sheet);
             fillWorkSheet("SMD", vendorKeys, sheet, hmap);
 
