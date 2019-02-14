@@ -131,12 +131,12 @@ class XLSXCreator {
             rowhead.createCell(4).setCellValue("Producent");
             rowhead.createCell(5).setCellValue("Uwagi");
             rowhead.createCell(6).setCellValue("Vendo");
-            rowhead.createCell(7).setCellValue("Czesc \nulamkowa\n(goldpiny)");
+            rowhead.createCell(7).setCellValue("Część ułamkowa");
             for (int i = 0; i <= 7; i++) {
                 rowhead.getCell(i).setCellStyle(styles.get("header"));
             }
 
-            int cnt = 0;
+            int cnt = 2;
             for (String key : vendorKeys) {
                 ProductModel towarInfo = hmap.get(key);
                 cnt += 1;
