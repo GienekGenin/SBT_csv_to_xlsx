@@ -68,7 +68,7 @@ class XLSXCreator {
 
         HSSFCellStyle emptyVendoCellStyle;
         HSSFPalette emptyPalette = wb.getCustomPalette();
-        HSSFColor emptyVendoBackgroundColor = emptyPalette.findSimilarColor(188, 0, 0);
+        HSSFColor emptyVendoBackgroundColor = emptyPalette.findSimilarColor(255,168,243);
 
         emptyVendoCellStyle = createBorderedStyle(wb);
         emptyVendoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -78,6 +78,20 @@ class XLSXCreator {
         emptyVendoCellStyle.setWrapText(true);
         emptyVendoCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         styles.put("emptyVendo", emptyVendoCellStyle);
+
+        HSSFCellStyle changeVendoCellStyle;
+        HSSFPalette changePalette = wb.getCustomPalette();
+        HSSFColor changeVendoBackgroundColor = changePalette.findSimilarColor(128,128,0);
+
+        changeVendoCellStyle = createBorderedStyle(wb);
+        changeVendoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        changeVendoCellStyle.setFillForegroundColor(changeVendoBackgroundColor.getIndex());
+        changeVendoCellStyle.setAlignment(HorizontalAlignment.LEFT);
+        changeVendoCellStyle.setFont(regularFont);
+        changeVendoCellStyle.setWrapText(true);
+        changeVendoCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        styles.put("changeVendo", changeVendoCellStyle);
+
         return styles;
     }
 
@@ -91,7 +105,7 @@ class XLSXCreator {
         workbook.write(fileOut);
         fileOut.close();
         workbook.close();
-        OutputStreamWriter osw = new OutputStreamWriter(fileOut, "UTF-8");
+        OutputStreamWriter osw = new OutputStreamWriter(fileOut);
         Writer out = new BufferedWriter(osw);
         out.close();
         System.out.println(outputFile.getPath() + " file has been generated!");
@@ -115,10 +129,14 @@ class XLSXCreator {
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.createSheet(selectedFile.getName());
 
-            sheet.addMergedRegion(new CellRangeAddress(0,1,0,7));
+            sheet.addMergedRegion(new CellRangeAddress(0,0,0,7));
 
             HSSFRow titleHead = sheet.createRow((short) 0);
-            titleHead.createCell(0).setCellValue(selectedFile.getName());
+            CellStyle cellStyle = titleHead.getSheet().getWorkbook().createCellStyle();
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+            HSSFCell titleCell = titleHead.createCell(0);
+            titleCell.setCellValue(selectedFile.getName());
+            titleCell.setCellStyle(cellStyle);
 
             HSSFRow rowhead = sheet.createRow((short) 2);
 
@@ -156,6 +174,10 @@ class XLSXCreator {
                 if (towarInfo.vendo.isEmpty() || towarInfo.vendo.equals("")) {
                     for (int i = 0; i <= 7; i++) {
                         row.getCell(i).setCellStyle(styles.get("emptyVendo"));
+                    }
+                } else if(towarInfo.vendo.contains("{")){
+                    for (int i = 0; i <= 7; i++) {
+                        row.getCell(i).setCellStyle(styles.get("changeVendo"));
                     }
                 } else {
                     for (int i = 0; i <= 7; i++) {

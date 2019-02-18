@@ -30,7 +30,7 @@ class CSVParser {
     void parseCSV(File selectedFile) {
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader(new File(selectedFile.getAbsolutePath())));
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(selectedFile.getAbsolutePath())));
             String availalbe;
             while ((availalbe = br.readLine()) != null) {
                 List<String> line = CSVLineParser.parseLine(availalbe);
