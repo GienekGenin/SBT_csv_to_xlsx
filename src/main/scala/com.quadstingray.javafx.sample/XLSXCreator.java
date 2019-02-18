@@ -81,7 +81,7 @@ class XLSXCreator {
 
         HSSFCellStyle changeVendoCellStyle;
         HSSFPalette changePalette = wb.getCustomPalette();
-        HSSFColor changeVendoBackgroundColor = changePalette.findSimilarColor(128,128,0);
+        HSSFColor changeVendoBackgroundColor = changePalette.findSimilarColor(240,230,140);
 
         changeVendoCellStyle = createBorderedStyle(wb);
         changeVendoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
